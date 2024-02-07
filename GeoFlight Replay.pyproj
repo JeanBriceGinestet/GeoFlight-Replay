@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{e8793682-16b1-4c17-9273-44832500066b}</ProjectGuid>
+    <ProjectHome />
+    <StartupFile>geoflight_replay_main.py</StartupFile>
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId>MSBuild|env-geoflightreplay|$(MSBuildProjectFullPath)</InterpreterId>
+    <IsWindowsApplication>False</IsWindowsApplication>
+    <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
+    <Name>GeoFlight Replay</Name>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="geoflight_replay_main.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Interpreter Include="env-geoflightreplay\">
+      <Id>env-geoflightreplay</Id>
+      <Version>3.11</Version>
+      <Description>env-geoflightreplay (Python 3.11 (64-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X64</Architecture>
+    </Interpreter>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="input_samples\BIRK_01_500.yaml" />
+    <Content Include="requirements.txt" />
+    <Content Include="ressources\JGT\ai.cfg" />
+    <Content Include="ressources\JGT\aircraft.cfg" />
+    <Content Include="ressources\JGT\Approach.flt" />
+    <Content Include="ressources\JGT\apron.flt" />
+    <Content Include="ressources\JGT\cameras.cfg" />
+    <Content Include="ressources\JGT\Climb.flt" />
+    <Content Include="ressources\JGT\cockpit.cfg" />
+    <Content Include="ressources\JGT\Cruise.flt" />
+    <Content Include="ressources\JGT\engines.cfg" />
+    <Content Include="ressources\JGT\Final.flt" />
+    <Content Include="ressources\JGT\flight_model.cfg" />
+    <Content Include="ressources\JGT\gameplay.cfg" />
+    <Content Include="ressources\JGT\hangar.flt" />
+    <Content Include="ressources\JGT\runway.FLT" />
+    <Content Include="ressources\JGT\systems.cfg" />
+    <Content Include="ressources\JGT\target_performance.cfg" />
+    <Content Include="ressources\JGT\taxi.flt" />
+    <Content Include="ressources\JGT\TEXTURE\PAPER BASE COLOR.PNG.DDS" />
+    <Content Include="ressources\JGT\TEXTURE\PAPER BASE COLOR.PNG.DDS.json" />
+    <Content Include="ressources\JGT\TEXTURE\texture.CFG" />
+    <Content Include="ressources\JGT\TEXTURE\thumbnail.JPG" />
+    <Content Include="ressources\JGT\TEXTURE\thumbnail_small.JPG" />
+    <Content Include="SimConnect.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="input_samples\" />
+    <Folder Include="ressources\" />
+    <Folder Include="ressources\JGT\" />
+    <Folder Include="ressources\JGT\model\" />
+    <Folder Include="ressources\JGT\panel\" />
+    <Folder Include="ressources\JGT\TEXTURE\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+</Project>

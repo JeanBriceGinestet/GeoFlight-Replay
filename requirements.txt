@@ -1,0 +1,16 @@
+click==8.1.7
+colorama==0.4.6
+comtypes==1.2.0
+dxcam==0.0.5
+keyboard==0.13.5
+lunr==0.7.0.post1
+numpy==1.26.0
+opencv-python==4.8.1.78
+pip==23.1.2
+PyGetWindow==0.0.9
+PyRect==0.2.0
+PyYAML==6.0.1
+setuptools==65.5.0
+SimConnect==0.4.26
+typer==0.9.0
+typing_extensions==4.8.0
