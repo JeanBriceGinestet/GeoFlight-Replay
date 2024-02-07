@@ -8,12 +8,20 @@ Example of capture done for LARD project https://github.com/deel-ai/LARD
 
 ## Features
 
+![Menu](/ressources/screenshot/sc01.png "Menu")
+
 
 ## Getting Started
 
-- You must enable Developper mode : https://docs.flightsimulator.com/html/Developer_Mode/Developer_Mode.htm
-- You must install Microsoft Flight Simulator SDK : https://docs.flightsimulator.com/html/Introduction/SDK_Overview.htm
+- Enable Developper mode : https://docs.flightsimulator.com/html/Developer_Mode/Developer_Mode.htm
+- Install Microsoft Flight Simulator SDK : https://docs.flightsimulator.com/html/Introduction/SDK_Overview.htm
+- Copy [JGT folder](ressources/JGT) into you Microsoft Flight Simulator Community folder
+- Select JGT Aicraft Corporation invsible aircraft :
+![Menu](/ressources/screenshot/sc02.png "Menu")
+- You start a flight and launch ![geoflight_replay_main.py](geoflight_replay_main.py "geoflight_replay_main.py")
 
 
 
-To complete
+<code style="">TO BE COMPLETED</code>
+
+
