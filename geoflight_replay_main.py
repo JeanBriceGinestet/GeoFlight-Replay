@@ -2,10 +2,8 @@
 
 __author__ = "Jean-Brice Ginestet"
 __license__ = ""
-__version__ = "0.1"
+__version__ = "0.15"
 __status__ = "Production"
-
-
 
 import random
 from SimConnect import *
@@ -18,16 +16,14 @@ import pygetwindow as gw
 import random
 import keyboard
 import os
+import sys
 
-# GFR version
-ID_GFR_V = 0.1
 
 default_input_file = "input_samples/BIRK_01_500.yaml"
 default_output_dir = "output/"
 
 # Pitch shift between Google Earth Studio and MS Flight Simulator
 GES_TO_FSIM_PICTH_SHIFT_DG = 90
-
 
 C_METER_TO_FEET = 3.280839895
 
@@ -40,8 +36,7 @@ BIRK_ALT = 48.879488
 LFBO_LAT = 43.632023
 LFBO_LON = 1.363311
 LFBO_ALT = 160 * C_METER_TO_FEET
-LFBO_HEAD_DG = 150
-
+LFBO_HEAD_DG = 150 # Heading on the LFBO runway
 
 # Default output pciture resolution(virtual camera)
 OUTPIC_RES_X_PIX = 2448
@@ -56,7 +51,9 @@ NB_RD_OBJ = 20
 
 # Time in seconds to wait for 3D data to load.
 LOAD3D_WAIT_TIME_S = 20
+LOAD3D_INTER_WAIT_TIME_S = 0.4
 
+# 3D miscellaneous aiport object list supported in Microfost Flight Simulator
 miscobjlist = [
     "ASO_Baggage_Cart01",
     "ASO_Baggage_Cart02",
@@ -80,17 +77,11 @@ miscobjlist = [
     "ASO_CarFacillity01_White",
     "ASO_TruckFacility01_Black",
     "ASO_TruckFacility01_Yellow",
-    # "Boat01", "Boat02",
-    # "CargoContainer01", "CargoGas01", "CargoOil", "CargoShip01",
-    # "CruiseShip01", "CruiseShip02",
-    # "FishingBoat", "FishingShip02", "FishingShip03",
-    # "Yacht01", "Yacht02", "Yacht03",
-    # "windmill",
     "windsock",
     "TNCM_Jetway",
 ]
 
-
+# 3D aicraft list supported in Microfost Flight Simulator
 aircraft_list = [
     "TBM 930 Asobo",
     "Airbus A320 Neo Asobo",
@@ -98,6 +89,7 @@ aircraft_list = [
     "Cessna 152 Asobo",
 ]
 
+# 3D living list supported in Microfost Flight Simulator
 living_list = [
     "Marshaller_Male_Summer_Indian",
     "Marshaller_Female_Winter_Caucasian",
@@ -119,7 +111,7 @@ living_list = [
 ]
 
 
-# add random objects
+# Add random 3D objects on runway (near the plane, if not on a runway)
 def add_objects_on_runway(sm, aq, objlist):
     lat = aq.get("PLANE_LATITUDE")
     lon = aq.get("PLANE_LONGITUDE")
@@ -156,8 +148,8 @@ def add_objects_on_runway(sm, aq, objlist):
                 speed=0,
             )
 
-
-def GES_to_fsim_capture(sm, input_file, b_save):
+# Run and capture a Google Earth Scenario in Microsoft Flight Simulator
+def GES_to_FSIM_runcapture(sm, input_file, b_save):
     if b_save:
         print("CAPTURE STARTING!")
     else:
@@ -209,15 +201,16 @@ def GES_to_fsim_capture(sm, input_file, b_save):
     # Configure screen region to capture to match Google Earth Studio acquisition
     camera.start(region=region, target_fps=120)
 
-    # loading input file
+    # Loading yaml input scenario file
     try:
         with open(input_file, "r") as f:
             data = yaml.safe_load(f)
     except Exception as e:
         print(e)
         quit()
+    print(f"{input_file} loaded!")
 
-    # create output dir if not exist.
+    # Create captured pictures output dir if not exist.
     if b_save:
         if not os.path.exists(default_output_dir):
             os.makedirs(default_output_dir)
@@ -234,7 +227,7 @@ def GES_to_fsim_capture(sm, input_file, b_save):
         heading = pose[3] if len(pose) > 3 else ""
         bank = pose[5] if len(pose) > 5 else ""
 
-        # Set aircraft/camera postion and orientation
+        # Set aircraft (eq camera) postion and orientation
         sm.set_pos(
             _Altitude=altitude * C_METER_TO_FEET,
             _Latitude=latitude,
@@ -253,11 +246,12 @@ def GES_to_fsim_capture(sm, input_file, b_save):
                 sleep(LOAD3D_WAIT_TIME_S)
                 print("CAPTURING SCENARIO!")
             else:
-                print("RUNNING SCENARIO!")
+                print("RUNNING SCENARIO...")
         else:
-            # Wait to load details data
-            sleep(0.4)
+            # Wait to load 3D world details data between 2 positions
+            sleep(LOAD3D_INTER_WAIT_TIME_S)
 
+        # Screen-capture, scale and save acquisition
         if b_save:
             im_str = (
                 default_output_dir
@@ -266,8 +260,6 @@ def GES_to_fsim_capture(sm, input_file, b_save):
                 + str(f"{id:03d}")
                 + ".png"
             )
-
-            # Screen-capture, scale and save acquisition
             cv2.imwrite(im_str, cv2.resize(camera.get_latest_frame(), newsize))
 
         id = id + 1
@@ -279,26 +271,34 @@ def GES_to_fsim_capture(sm, input_file, b_save):
     else:
         print("RUN FINISHED!\n")
 
-
+# Print user menu for interactive mode
 def print_menu():
+    print(f"- Press c to capture a Google Earth Studio scenario.  Default scenario file {default_input_file}")
+    print(f"- Press r to run Google Earth Studio scenario. Default scenario file {default_input_file}")
+    print()
     print("- Press t to go to LFBO airport")
     print("- Press b to go to BIRK airport")
+    print()
     print("- Press o to add random airport misc objects")
     print("- Press a to add random aircrafts")
     print("- Press l to add random living things")
-    print("- Press c to capture a Google Earth Studio scenario : ", default_input_file)
-    print("- Press r to run Google Earth Studio scenario : ", default_input_file)
     print()
     print("- Press q to quit")
     print()
 
-
 def main():
-    b_cont = True
 
-    input_file = default_input_file
+    if len(sys.argv)==2:
+        input_file = sys.argv[1] 
+        if not os.path.isfile(input_file):
+            print(f"Error: No such file or directory : {input_file}")
+            quit()
+        b_interactive = False
+    else:
+        b_cont = True
+        b_interactive = True
 
-    print("Welcome to GeoFlight Replay v", __version__, "!\n")
+    print(f"Welcome to GeoFlight Replay v{ __version__} !\n")
 
     # Connection to Flight Simulator
     try:
@@ -310,64 +310,73 @@ def main():
 
     print("Connected to Flight Simulator!\n")
 
-    print_menu()
-
+    # Set-up Fsim connfiguration
     aq = AircraftRequests(sm)
     ae = AircraftEvents(sm)
-
     # Set FS simulation in Pause mode
     event_to_trigger = ae.find("PAUSE_ON")
     event_to_trigger()
 
-    while b_cont == True:
-        event = keyboard.read_event()
-
-        if event.name == "q" and event.event_type == "down":
-            b_cont = False
-            break
-        elif event.name == "a" and event.event_type == "down":
-            add_objects_on_runway(sm, aq, aircraft_list)
-            print("AIRCRAFTS ADDED!")
-        elif event.name == "l" and event.event_type == "down":
-            add_objects_on_runway(sm, aq, living_list)
-            print("LIVINGS ADDED!")
-        elif event.name == "c" and event.event_type == "down":
-            GES_to_fsim_capture(sm, input_file, True)
-        elif event.name == "r" and event.event_type == "down":
-            GES_to_fsim_capture(sm, input_file, False)
-        elif event.name == "o" and event.event_type == "down":
-            add_objects_on_runway(sm, aq, miscobjlist)
-            print("MISC. OBJECTS ADDED!")
-        elif event.name == "t" and event.event_type == "down":
-            # SET position (LFBO)
-            sm.set_pos(
-                _Altitude=LFBO_ALT,
-                _Latitude=LFBO_LAT,
-                _Longitude=LFBO_LON,
-                _Airspeed=0,
-                _Heading=LFBO_HEAD_DG,
-                _Pitch=0,
-                _Bank=0,
-                _OnGround=0,
-            )
-            print("Positon set to LFBO")
-
-        elif event.name == "b" and event.event_type == "down":
-            # SET position (BIRK)
-            sm.set_pos(
-                _Altitude=BIRK_ALT,
-                _Latitude=BIRK_LAT,
-                _Longitude=BIRK_LON,
-                _Airspeed=0,
-                _Heading=0,
-                _Pitch=0,
-                _Bank=0,
-                _OnGround=0,
-            )
-            print("Positon set to BIRK")
-
+    # Interactive mode
+    if b_interactive:
+        print_menu()
+        while b_cont == True:
+            event = keyboard.read_event(True)
+    
+            if event.name == "q" and event.event_type == "down":
+                b_cont = False
+                break
+            elif event.name == "a" and event.event_type == "down":
+                add_objects_on_runway(sm, aq, aircraft_list)
+                print("AIRCRAFTS ADDED!")
+            elif event.name == "l" and event.event_type == "down":
+                add_objects_on_runway(sm, aq, living_list)
+                print("LIVINGS ADDED!")
+            elif (event.name == "c" or event.name == "r") and event.event_type == "down":
+                input_file = input(f'Enter YAML scenario file or press ENTER for default file [{default_input_file}] : ') or default_input_file
+                if not os.path.isfile(input_file):
+                    print(f"Error: No such file or directory : {input_file}")
+                else:
+                    if event.name == "c":
+                        b_capture = True
+                    else:
+                        b_capture = False
+                    GES_to_FSIM_runcapture(sm, input_file, b_capture)
+            elif event.name == "o" and event.event_type == "down":
+                add_objects_on_runway(sm, aq, miscobjlist)
+                print("MISC. OBJECTS ADDED!")
+            elif event.name == "t" and event.event_type == "down":
+                # SET position (LFBO)
+                sm.set_pos(
+                    _Altitude=LFBO_ALT,
+                    _Latitude=LFBO_LAT,
+                    _Longitude=LFBO_LON,
+                    _Airspeed=0,
+                    _Heading=LFBO_HEAD_DG,
+                    _Pitch=0,
+                    _Bank=0,
+                    _OnGround=0,
+                )
+                print("Positon set to LFBO")
+    
+            elif event.name == "b" and event.event_type == "down":
+                # SET position (BIRK)
+                sm.set_pos(
+                    _Altitude=BIRK_ALT,
+                    _Latitude=BIRK_LAT,
+                    _Longitude=BIRK_LON,
+                    _Airspeed=0,
+                    _Heading=0,
+                    _Pitch=0,
+                    _Bank=0,
+                    _OnGround=0,
+                )    
+                print("Positon set to BIRK")
+    # Script mode
+    else:
+        GES_to_FSIM_runcapture(sm, input_file, True)
+    
     print("QUIT!")
-
     sm.exit()
     quit()
 
