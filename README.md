@@ -45,7 +45,7 @@ GeoFlight Replay can replay and capture scenario from Google Earth Studio (YAML 
 ## Known limitations
 -	Only supports Microsoft Flight Simulator 2020
 -	Microsoft Flight Simulator SDK doesnt allow to set directly the camera to a desired position and orientation. To bypass this limitation, GeoFlight Replay sets the position of an invisible aircraft JGT Aircraft, delivered in [jgt-airplane folder](ressources/jgt-airplane)), the camera being attached to the aircraft reference frame. This trick indirectly sets the camera to a desired location and orientation.
--	Microsoft Flight Simulator SDK doesnt allow to peform a screen capture or get a picture from the simulated camera. Picture are generated thanks to the Windows screen capture tool [dxcam](https://pypi.org/project/dxcam/).The generated pictures therefore depend on your screen resolution. If you have a NVIDIA GeForce GPU, you can use DSR technology to bypass this limitation : https://www.nvidia.com/en-us/geforce/technologies/dsr/technology/
+-	Microsoft Flight Simulator SDK doesnt allow to peform a screen capture or get a picture from the simulated camera. Picture are generated thanks to a Windows screen capture tool [dxcam](https://pypi.org/project/dxcam/).The generated pictures therefore depend on your screen resolution. If you have a NVIDIA GeForce GPU, you can use DSR technology to bypass this limitation : https://www.nvidia.com/en-us/geforce/technologies/dsr/technology/
 
   
 
