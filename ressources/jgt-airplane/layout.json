@@ -1,0 +1,169 @@
+{
+  "content": [
+    {
+      "path": "SimObjects/Airplanes/JGT/ai.cfg",
+      "size": 1516,
+      "date": 132709526893531624
+    },
+    {
+      "path": "SimObjects/Airplanes/JGT/aircraft.cfg",
+      "size": 4997,
+      "date": 132709954350565724
+    },
+    {
+      "path": "SimObjects/Airplanes/JGT/Approach.flt",
+      "size": 1689,
+      "date": 132694525639900179
+    },
+    {
+      "path": "SimObjects/Airplanes/JGT/apron.flt",
+      "size": 2833,
+      "date": 132694525639900179
+    },
+    {
+      "path": "SimObjects/Airplanes/JGT/cameras.cfg",
+      "size": 4542,
+      "date": 132709954350325829
+    },
+    {
+      "path": "SimObjects/Airplanes/JGT/Climb.flt",
+      "size": 1729,
+      "date": 132694525639910177
+    },
+    {
+      "path": "SimObjects/Airplanes/JGT/cockpit.cfg",
+      "size": 5316,
+      "date": 132709526893311565
+    },
+    {
+      "path": "SimObjects/Airplanes/JGT/Cruise.flt",
+      "size": 1728,
+      "date": 132694525639920180
+    },
+    {
+      "path": "SimObjects/Airplanes/JGT/engines.cfg",
+      "size": 483,
+      "date": 132709954361425999
+    },
+    {
+      "path": "SimObjects/Airplanes/JGT/Final.flt",
+      "size": 1694,
+      "date": 132694525639930181
+    },
+    {
+      "path": "SimObjects/Airplanes/JGT/flight_model.cfg",
+      "size": 12467,
+      "date": 132709954361409034
+    },
+    {
+      "path": "SimObjects/Airplanes/JGT/gameplay.cfg",
+      "size": 1224,
+      "date": 132709526893331570
+    },
+    {
+      "path": "SimObjects/Airplanes/JGT/hangar.flt",
+      "size": 2706,
+      "date": 132694525639940183
+    },
+    {
+      "path": "SimObjects/Airplanes/JGT/model/DA62.xml",
+      "size": 3587,
+      "date": 132706874320000000
+    },
+    {
+      "path": "SimObjects/Airplanes/JGT/model/DA62_LOD00.bin",
+      "size": 3168,
+      "date": 132710025400791457
+    },
+    {
+      "path": "SimObjects/Airplanes/JGT/model/DA62_LOD00.gltf",
+      "size": 2549,
+      "date": 132710025400791457
+    },
+    {
+      "path": "SimObjects/Airplanes/JGT/model/model.CFG",
+      "size": 668,
+      "date": 132706874420000000
+    },
+    {
+      "path": "SimObjects/Airplanes/JGT/panel/PANEL.CFG",
+      "size": 1203,
+      "date": 132417885660000000
+    },
+    {
+      "path": "SimObjects/Airplanes/JGT/panel/panel.xml",
+      "size": 18247,
+      "date": 132417885660000000
+    },
+    {
+      "path": "SimObjects/Airplanes/JGT/runway.FLT",
+      "size": 1817,
+      "date": 132694525639950188
+    },
+    {
+      "path": "SimObjects/Airplanes/JGT/systems.cfg",
+      "size": 10620,
+      "date": 132709526891963646
+    },
+    {
+      "path": "SimObjects/Airplanes/JGT/target_performance.cfg",
+      "size": 1821,
+      "date": 132417885660000000
+    },
+    {
+      "path": "SimObjects/Airplanes/JGT/taxi.flt",
+      "size": 1873,
+      "date": 132694525639960189
+    },
+    {
+      "path": "SimObjects/Airplanes/JGT/TEXTURE/PAPER BASE COLOR.PNG.DDS",
+      "size": 11184952,
+      "date": 132710025400711435
+    },
+    {
+      "path": "SimObjects/Airplanes/JGT/TEXTURE/PAPER BASE COLOR.PNG.DDS.json",
+      "size": 102,
+      "date": 132710025400621417
+    },
+    {
+      "path": "SimObjects/Airplanes/JGT/TEXTURE/texture.CFG",
+      "size": 200,
+      "date": 132417885880000000
+    },
+    {
+      "path": "SimObjects/Airplanes/JGT/TEXTURE/thumbnail.JPG",
+      "size": 51491,
+      "date": 132707293220000000
+    },
+    {
+      "path": "SimObjects/Airplanes/JGT/TEXTURE/thumbnail_small.JPG",
+      "size": 17787,
+      "date": 132707293440000000
+    },
+    {
+      "path": "SimObjects/Airplanes/JGT/TEXTURE.1/PAPER BASE COLOR.PNG.DDS",
+      "size": 2796344,
+      "date": 132710025404911515
+    },
+    {
+      "path": "SimObjects/Airplanes/JGT/TEXTURE.1/PAPER BASE COLOR.PNG.DDS.json",
+      "size": 102,
+      "date": 132710025404881510
+    },
+    {
+      "path": "SimObjects/Airplanes/JGT/TEXTURE.1/texture.CFG",
+      "size": 200,
+      "date": 132417885880000000
+    },
+    {
+      "path": "SimObjects/Airplanes/JGT/TEXTURE.1/thumbnail.JPG",
+      "size": 55704,
+      "date": 132708371820000000
+    },
+    {
+      "path": "SimObjects/Airplanes/JGT/TEXTURE.1/thumbnail_small.JPG",
+      "size": 19451,
+      "date": 132708371620000000
+    }
+  ]
+}
