@@ -1,8 +1,9 @@
-"""geoflight_replay_main.py: Replay and capture scenario from Google Earth Studio (YAML format) in Microsoft Flight Simulator."""
+"""geoflight_replay_main.py: Replay and capture scenario from Google Earth Studio 
+(YAML format) in Microsoft Flight Simulator."""
 
 __author__ = "Jean-Brice Ginestet"
-__license__ = ""
-__version__ = "0.15"
+__license__ = "MIT"
+__version__ = "0.2"
 __status__ = "Production"
 
 import random
@@ -17,6 +18,7 @@ import random
 import keyboard
 import os
 import sys
+from pygetwindow import PyGetWindowException
 
 
 default_input_file = "input_samples/BIRK_01_500.yaml"
@@ -39,8 +41,8 @@ LFBO_ALT = 160 * C_METER_TO_FEET
 LFBO_HEAD_DG = 150 # Heading on the LFBO runway
 
 # Default output pciture resolution(virtual camera)
-OUTPIC_RES_X_PIX = 2448
-OUTPIC_RES_Y_PIX = 2648
+OUTPIC_RES_X_PIX = 1920
+OUTPIC_RES_Y_PIX = 1080
 
 # Value to crop on screen capture, depends on screen resolution. Here values for 3840*2160.
 DEFAULT_TOP_CROP_PIX = int(38)
@@ -49,9 +51,10 @@ DEFAULT_BOTTOM_BLACK_BAR_CROP_PIX = int(8)
 # Number of ramdom of objects to add
 NB_RD_OBJ = 20
 
-# Time in seconds to wait for 3D data to load.
-LOAD3D_WAIT_TIME_S = 20
-LOAD3D_INTER_WAIT_TIME_S = 0.4
+# Define delays
+CHANGE_AIRPORT_3D_DELAY = 35  # 30 seconds for airport change
+CHANGE_RUNWAY_3D_DELAY = 10    # 10 seconds for runway change within the same airport
+BASE_FRAME_DELAY = 2           # 2 seconds for same runway
 
 # 3D miscellaneous aiport object list supported in Microfost Flight Simulator
 miscobjlist = [
@@ -151,23 +154,31 @@ def add_objects_on_runway(sm, aq, objlist):
 # Run and capture a Google Earth Scenario in Microsoft Flight Simulator
 def GES_to_FSIM_runcapture(sm, input_file, b_save):
     if b_save:
-        print("CAPTURE STARTING!")
+        print("Capture started")
     else:
-        print("RUN STARTING!")
+        print("Run started")
 
     # Switch to Flight Simulator Window
     winFS = gw.getWindowsWithTitle("Microsoft Flight Simulator")[0]
     winFS.maximize()
-    winFS.activate()
+    try:
+        winFS.activate()  
+    except PyGetWindowException:
+        print(" exception catched ")
     sleep(0.2)
 
-    # TODO : read pix size from YAML
-    # entry = data["image"]
-    # campic_res_x_pix = entry.get("width", [])
-    # campic_res_y_pix = entry.get("height", [])
-
-    campic_res_x_pix = OUTPIC_RES_X_PIX
-    campic_res_y_pix = OUTPIC_RES_Y_PIX
+    # Loading yaml input scenario file
+    try:
+        with open(input_file, "r") as f:
+            data = yaml.safe_load(f)
+    except Exception as e:
+        print(e)
+        quit()
+    filename = os.path.splitext(os.path.basename(input_file))[0]
+    print(f"{filename} loaded!")
+    entry = data.get("image", {})
+    campic_res_x_pix = entry.get("width", OUTPIC_RES_X_PIX)
+    campic_res_y_pix = entry.get("height", OUTPIC_RES_Y_PIX)
 
     # Compute scale to match pic size from Google Earth Studio
     newsize = (campic_res_x_pix, campic_res_y_pix)
@@ -182,6 +193,10 @@ def GES_to_FSIM_runcapture(sm, input_file, b_save):
 
     # Bottom screen black bar in Flight Simulator,  depends on the screen resolution
     bottom_black_bar_pix = DEFAULT_BOTTOM_BLACK_BAR_CROP_PIX
+    
+    left_crop_pix = 0
+    right_crop_pix = screen_res_x_pix
+    bottom_crop_pix = screen_res_y_pix
 
     # Adpat output pic to screen res
     if campic_res_y_pix > screen_res_y_pix:
@@ -190,7 +205,7 @@ def GES_to_FSIM_runcapture(sm, input_file, b_save):
         bottom_crop_pix = int(screen_res_y_pix - bottom_black_bar_pix)
         left_crop_pix = int((screen_res_x_pix / 2) - (campic_crop_res_x_pix / 2))
         right_crop_pix = int(left_crop_pix + campic_crop_res_x_pix)
-
+    
     # Define screen region to capture
     left = left_crop_pix
     top = top_crop_pix
@@ -201,20 +216,16 @@ def GES_to_FSIM_runcapture(sm, input_file, b_save):
     # Configure screen region to capture to match Google Earth Studio acquisition
     camera.start(region=region, target_fps=120)
 
-    # Loading yaml input scenario file
-    try:
-        with open(input_file, "r") as f:
-            data = yaml.safe_load(f)
-    except Exception as e:
-        print(e)
-        quit()
-    print(f"{input_file} loaded!")
-
+    output_dir = default_output_dir + "/" + filename
     # Create captured pictures output dir if not exist.
     if b_save:
         if not os.path.exists(default_output_dir):
             os.makedirs(default_output_dir)
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
 
+    previous_airport = None
+    previous_runway = None
     id = 0
     for entry in data["poses"]:
         # Get postion and orientation data from input file
@@ -227,6 +238,9 @@ def GES_to_FSIM_runcapture(sm, input_file, b_save):
         heading = pose[3] if len(pose) > 3 else ""
         bank = pose[5] if len(pose) > 5 else ""
 
+        current_airport = entry.get("airport", "")
+        current_runway = entry.get("runway", "")
+
         # Set aircraft (eq camera) postion and orientation
         sm.set_pos(
             _Altitude=altitude * C_METER_TO_FEET,
@@ -238,42 +252,52 @@ def GES_to_FSIM_runcapture(sm, input_file, b_save):
             _Bank=-bank,
             _OnGround=0,
         )
+        
 
         if id == 0:
             if b_save:
                 # Wait to load data longer for the first position
-                print("WAITING FOR 3D DATA TO lOAD.")
-                sleep(LOAD3D_WAIT_TIME_S)
-                print("CAPTURING SCENARIO!")
+                print("Waiting to load airport area...")
+                sleep(CHANGE_AIRPORT_3D_DELAY)
+                print("Capturing scenario...")
             else:
-                print("RUNNING SCENARIO...")
+                print("Running scenario...")
         else:
-            # Wait to load 3D world details data between 2 positions
-            sleep(LOAD3D_INTER_WAIT_TIME_S)
+            # Determine appropriate delay based on airport and runway changes
+            if current_airport != previous_airport:
+                print(f"Waiting to load {current_airport} airport area...")
+                sleep(CHANGE_AIRPORT_3D_DELAY)
+            elif current_runway != previous_runway:
+                sleep(CHANGE_RUNWAY_3D_DELAY)
+            else:
+                sleep(BASE_FRAME_DELAY)
 
         # Screen-capture, scale and save acquisition
         if b_save:
             im_str = (
-                default_output_dir
-                + os.path.splitext(os.path.basename(default_input_file))[0]
+                output_dir
+                + "/"
+                + filename
                 + "_"
                 + str(f"{id:03d}")
                 + ".png"
             )
             cv2.imwrite(im_str, cv2.resize(camera.get_latest_frame(), newsize))
-
+        # Update previous airport and runway for the next iteration
+        previous_airport = current_airport
+        previous_runway = current_runway
         id = id + 1
 
     camera.stop()
 
     if b_save:
-        print("CAPTURE FINISHED!\n")
+        print("Capture finished.\n")
     else:
-        print("RUN FINISHED!\n")
+        print("Run finished.\n")
 
 # Print user menu for interactive mode
 def print_menu():
-    print(f"- Press c to capture a Google Earth Studio scenario.  Default scenario file {default_input_file}")
+    print(f"- Press c to export images from a Google Earth Studio scenario.  Default scenario file {default_input_file}")
     print(f"- Press r to run Google Earth Studio scenario. Default scenario file {default_input_file}")
     print()
     print("- Press t to go to LFBO airport")
@@ -320,6 +344,7 @@ def main():
     # Interactive mode
     if b_interactive:
         print_menu()
+        # try:
         while b_cont == True:
             event = keyboard.read_event(True)
     
@@ -371,7 +396,9 @@ def main():
                     _Bank=0,
                     _OnGround=0,
                 )    
-                print("Positon set to BIRK")
+                print("Positon set to BIRK")                    
+        # except OSError as e:
+        #     print("Connection to FSIM lost - Quitting")
     # Script mode
     else:
         GES_to_FSIM_runcapture(sm, input_file, True)
