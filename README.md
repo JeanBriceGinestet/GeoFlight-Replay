@@ -8,6 +8,22 @@ GeoFlight Replay can replay and capture scenario from Google Earth Studio (YAML 
 </a>
 </p>
 
+## Installation
+
+Create a new virtual environment and run the following command through pip at the root of this folder:
+```
+pip install .
+```
+Alternatively, you can install the requirements provided in `requirements.txt`
+
+## Usage 
+
+Once installed, simply run:
+```
+geoflight_replay
+```
+
+This will open a command-line menu, but if you prefer, you can provide a yaml scenario file directly in command line, as follows: `geoflight_replay file.yaml`.
 
 ## Features
 

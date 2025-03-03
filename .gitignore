@@ -150,6 +150,12 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# Visual Studio
+.vs
+*.pyproj
+*.pyproj.user
+*.sln
+
 # pytype static type analyzer
 .pytype/
 
