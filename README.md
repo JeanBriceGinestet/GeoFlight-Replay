@@ -50,11 +50,11 @@ This will open a command-line menu, but if you prefer, you can provide a yaml sc
 
 
 - Launch GeoFlight Replay :
-	-	Interactive mode with an user menu : ![geoflight_replay_main.py](geoflight_replay_main.py "geoflight_replay_main.py")
+	-	Interactive mode with an user menu : ![geoflight_replay/cli.py](geoflight_replay/cli.py "geoflight_replay/cli.py")
 		
 		or
-		 
-	-  Script mode, will launch and capture the provided scenario : python .\geoflight_replay_main.py [your YAML scenario file]. Generated pictures will be in output folder.
+		 `
+	-  Script mode, will launch and capture the provided scenario : python geoflight_replay/cli.py [your YAML scenario file]`. Generated pictures will be in output folder.
 
 
 
@@ -63,8 +63,5 @@ This will open a command-line menu, but if you prefer, you can provide a yaml sc
 -	Microsoft Flight Simulator SDK doesnt allow to set directly the camera to a desired position and orientation. To bypass this limitation, GeoFlight Replay sets the position of an invisible aircraft JGT Aircraft, delivered in [jgt-airplane folder](ressources/jgt-airplane)), the camera being attached to the aircraft reference frame. This trick indirectly sets the camera to a desired location and orientation.
 -	Microsoft Flight Simulator SDK doesnt allow to peform a screen capture or get a picture from the simulated camera. Picture are generated thanks to a Windows screen capture tool [dxcam](https://pypi.org/project/dxcam/).The generated pictures therefore depend on your screen resolution. If you have a NVIDIA GeForce GPU, you can use DSR technology to bypass this limitation : https://www.nvidia.com/en-us/geforce/technologies/dsr/technology/
 
-  
-
-<code style="">TO BE COMPLETED</code>
 
 
