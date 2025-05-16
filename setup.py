@@ -2,8 +2,8 @@ from setuptools import setup, find_packages
 
 setup(
     name="geoflight_replay",
-    version="1.0.0",
-    author='Jean-Brice Ginestet, Vincent Mussot',
+    version="1.1.0",
+    author='Jean-Brice Ginestet, Vincent Mussot, Jacques Girard',
     author_email='vincent.mussot@irt-saintexupery.com',
     description='Replay and capture scenarios of positions in Flight Simulator 2020',
     packages=find_packages(),
@@ -32,7 +32,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'geoflight_replay = geoflight_replay.cli:main',
+            'geoflight_replay = geoflight_replay.cli:invite',
         ],
     },
 )

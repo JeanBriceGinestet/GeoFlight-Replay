@@ -9,7 +9,7 @@ from geoflight_replay.interactive_cli import interactive_loop
 from geoflight_replay.constants import default_input_file
 
 
-def main():
+def invite():
     """
     Entry point for geoflight_replay.
     This script determines whether to run in interactive mode or script mode.
@@ -24,7 +24,7 @@ def main():
         if not os.path.isfile(input_file):
             print(f"Error: No such file or directory: {input_file}")
             return
-        GES_to_FSIM_runcapture(sm, input_file, b_save=True)
+        GES_to_FSIM_runcapture(sm, aq, ae, input_file, b_save=True)
 
     else:
         interactive_loop(sm, aq, ae)
