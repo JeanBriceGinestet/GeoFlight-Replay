@@ -1,13 +1,12 @@
 import os
 import cv2
 import yaml
+import json
 import random
 import dxcam
 from time import sleep
+from PIL import Image
 
-import pyautogui
-
-from SimConnect import AircraftEvents 
 from .windows_utils import show_available_windows, activate_and_maximize_window
 from .simconnect_utils import set_position
 from .constants import (
@@ -18,6 +17,8 @@ from .constants import (
     CHANGE_RUNWAY_DELAY,
     BASE_DELAY
 )
+
+glob_current_airport = "" # Variable to store current airport in case of error, to be able to restart from that same airport
 
 def load_scenario(input_file):
     """
@@ -50,7 +51,7 @@ def validate_scenario_fits(scenario_width, scenario_height, available_width, ava
         )
 
 
-def compute_capture_region(scenario_width, scenario_height, screen_width, screen_height):
+def compute_top_left_capture_region(scenario_width, scenario_height, screen_width, screen_height):
     """
     Computes the screen region from which images will be captured.
     Returns (left, top, right, bottom).
@@ -60,22 +61,23 @@ def compute_capture_region(scenario_width, scenario_height, screen_width, screen
 
     validate_scenario_fits(scenario_width, scenario_height, available_width, available_height)
 
-    left = (available_width - scenario_width) // 2
-    top = DEFAULT_TOP_CROP_PIX + (available_height - scenario_height) // 2
+    left = 1
+    top = DEFAULT_TOP_CROP_PIX
     right = left + scenario_width
     bottom = top + scenario_height
 
     return (left, top, right, bottom)
 
 
-def replay_poses(poses, sm, camera, region, b_save, output_dir, filename):
+def replay_poses(poses, sm, aq, ae, camera, region, b_save, output_dir, filename, from_airport = ""):
     """
     Loops through the poses to set position/time and captures frames if requested.
+    Start from from_airport if specified. (case of error)
     """
-    ae = AircraftEvents(sm)
+    
     event_to_trigger = ae.find("PAUSE_ON")
     event_to_trigger()
-    sleep(0.2)
+    sleep(0.5)
 
     total_poses = len(poses)
     num_digits = len(str(total_poses))
@@ -89,6 +91,12 @@ def replay_poses(poses, sm, camera, region, b_save, output_dir, filename):
         print("Run started (no image saving).")
 
     for i, entry in enumerate(poses):
+        # Handling case where we defined a specific airport to start from
+        if from_airport != "" and from_airport !=  entry.get("airport", ""):
+            continue
+        elif from_airport == entry.get("airport", ""):
+            from_airport = ""
+
         pose_data = entry.get("pose", [])
         if len(pose_data) < 6:
             print(f"Skipping pose index={i}, incomplete data.")
@@ -96,17 +104,26 @@ def replay_poses(poses, sm, camera, region, b_save, output_dir, filename):
 
         lon, lat, alt, heading, pitch, bank = pose_data
         current_airport = entry.get("airport", "")
-        current_runway = entry.get("runway", "")
-        current_date = entry.get("time")
 
+        global glob_current_airport
+        glob_current_airport = current_airport
+
+        current_runway = entry.get("runway", "")
+
+
+        first_pose = False
+        set_position(sm, alt, lat, lon, heading=heading, pitch=pitch, bank=bank)
+        
+        sleep(0.2)
+
+        current_date = entry.get("time")
         current_hour = current_date.get("hour")
         event_clock = ae.find("CLOCK_HOURS_SET")
         event_clock(current_hour)
-
-        set_position(sm, alt, lat, lon, heading=heading, pitch=pitch, bank=bank)
         if i == 0:
             if b_save:
                 print("Waiting for first airport area to load...")
+                first_pose = True
                 sleep(CHANGE_AIRPORT_DELAY)
                 print("Capturing scenario start...")
             else:
@@ -114,12 +131,21 @@ def replay_poses(poses, sm, camera, region, b_save, output_dir, filename):
         else:
             if current_airport != prev_airport:
                 print(f"Switching airport to {current_airport}...")
+                first_pose = True
                 sleep(CHANGE_AIRPORT_DELAY)
             elif current_runway != prev_runway:
                 print(f"Switching runway to {current_runway}...")
                 sleep(CHANGE_RUNWAY_DELAY)
             else:
                 sleep(BASE_DELAY)
+
+        sleep(0.1)
+
+
+        if first_pose:      # Replaying first pose of each airport due to uncontrollable issues occuring sporadically in FLight Simulator
+            set_position(sm, alt, lat, lon, heading=heading, pitch=pitch, bank=bank)
+            event_clock(current_hour)
+            sleep(BASE_DELAY + 1)
 
         if b_save:
             frame = camera.grab(region)
@@ -135,22 +161,22 @@ def replay_poses(poses, sm, camera, region, b_save, output_dir, filename):
         prev_airport = current_airport
         prev_runway = current_runway
 
+    glob_current_airport = "FINISHED"
     if b_save:
         print("Capture finished.\n")
     else:
         print("Run finished.\n")
 
 
-def GES_to_FSIM_runcapture( sm, input_file, b_save, window_title="Microsoft Flight Simulator" ):
+def GES_to_FSIM_runcapture( sm, aq, ae, input_file, b_save, window_title="Microsoft Flight Simulator", rework_altitude=False):
     """
     Replays a Google Earth Studio scenario in Flight Simulator (or any target window) and
     optionally saves captures. Splits tasks into dedicated helper functions for clarity.
     """
-    if not activate_and_maximize_window(window_title):
-        return
 
     # Load the scenario
     data = load_scenario(input_file)
+
     if data is None:
         return  # error already printed in load_scenario
     
@@ -160,17 +186,20 @@ def GES_to_FSIM_runcapture( sm, input_file, b_save, window_title="Microsoft Flig
     camera = initialize_camera()
 
     img_info = data.get("image", {})
-    zoom_value = img_info.get("fov") * 2
+    zoom_value = img_info.get("fov_x")
     scenario_width = img_info.get("width", 1024)
     scenario_height = img_info.get("height", 1024)
     print(f"   Expecting a fov of: {zoom_value}.")
     print(f"Scenario expects size: {scenario_width}×{scenario_height}")
 
+    if not activate_and_maximize_window(window_title, scenario_width, scenario_height):
+        return
+    
     screen_width = camera.width
     screen_height = camera.height
 
     # Compute capture region
-    region = compute_capture_region( scenario_width, scenario_height, screen_width, screen_height)
+    region = compute_top_left_capture_region( scenario_width, scenario_height, screen_width, screen_height)
 
     print(
         f"Capturing region: {region}, \n"
@@ -184,7 +213,18 @@ def GES_to_FSIM_runcapture( sm, input_file, b_save, window_title="Microsoft Flig
         print(f"Capture directory: {output_dir}")
 
     poses = data.get("poses", [])
-    replay_poses(poses, sm, camera, region, b_save, output_dir, filename)
+
+    global glob_current_airport
+    glob_current_airport = ""  # Parameter to change to start from a specific airport, or "" to start fromt the beginning
+
+    while (glob_current_airport != "FINISHED"):
+        try:
+            replay_poses(poses, sm, aq, ae, camera, region, b_save, output_dir, filename, glob_current_airport)
+        except KeyboardInterrupt:
+            glob_current_airport = "FINISHED"
+        except:
+            print(f"[HANDLED-ERROR] Restarting at airport {glob_current_airport}.")
 
     # camera.stop()
+    print("       --- Scenario completed. ---")
     sleep(1)

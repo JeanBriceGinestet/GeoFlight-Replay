@@ -6,8 +6,7 @@ __status__ = "Production"
 # ================================
 # Global Constants & Configuration
 # ================================
-
-default_input_file = "input_samples/EDFH-3-21__6-smpl__carre_pitch_yaw.yaml"
+default_input_file = "input_samples/VIDP-9-27.yaml"
 default_output_dir = "output/"
 
 # Pitch shift between Google Earth Studio and MS Flight Simulator
@@ -31,16 +30,16 @@ OUTPIC_RES_X_PIX = 1920
 OUTPIC_RES_Y_PIX = 1080
 
 # Crop on screen capture
-DEFAULT_TOP_CROP_PIX = 38
+DEFAULT_TOP_CROP_PIX = 31
 DEFAULT_BOTTOM_BLACK_BAR_CROP_PIX = 80
 
 # Number of random objects to add
 NB_RD_OBJ = 20
 
 # Time in seconds to wait for 3D data to load
-CHANGE_AIRPORT_DELAY = 2  # sec
-CHANGE_RUNWAY_DELAY =  1  # sec
-BASE_DELAY =           1  # sec
+CHANGE_AIRPORT_DELAY = 35  # sec
+CHANGE_RUNWAY_DELAY =  4  # sec
+BASE_DELAY =           2  # sec
 
 # 3D miscellaneous aiport object list supported in Microfost Flight Simulator
 miscobjlist = [

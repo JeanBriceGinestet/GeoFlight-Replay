@@ -1,0 +1,227 @@
+airports_runways:
+  VIDP:
+  - '9'
+  - '27'
+image:
+  height: 1024
+  width: 1024
+  fov_x: 60.0
+  fov_y: 60.0
+  watermark_height: 0
+poses:
+- uuid: 2370d982-c423-4b59-b7e5-e2f2f944fc5e
+  airport: VIDP
+  runway: '9'
+  pose:
+  - 77.12666093467698
+  - 28.56927513574211
+  - 363.5165049062432
+  - -79.01655092778415
+  - 76.20230384653966
+  - 23.035054235841173
+  time:
+    second: 1
+    minute: 0
+    hour: 16
+    day: 1
+    month: 7
+    year: 2020
+- uuid: f770a364-271a-4577-b96d-24dac2a28e1d
+  airport: VIDP
+  runway: '9'
+  pose:
+  - 77.12325259170751
+  - 28.569578939943952
+  - 340.9296581231994
+  - -91.92276459230762
+  - 79.95515347823064
+  - 22.285021705883764
+  time:
+    second: 1
+    minute: 0
+    hour: 13
+    day: 1
+    month: 5
+    year: 2020
+- uuid: e923fb71-03dc-439c-9d41-578957ac41a1
+  airport: VIDP
+  runway: '9'
+  pose:
+  - 77.12122983624681
+  - 28.569714658930096
+  - 283.750549792608
+  - -90.00045088990984
+  - 78.93114739406552
+  - 25.611460080122875
+  time:
+    second: 1
+    minute: 0
+    hour: 14
+    day: 1
+    month: 7
+    year: 2020
+- uuid: 9b389c61-8478-4f78-b5c8-933b52fbcfdc
+  airport: VIDP
+  runway: '9'
+  pose:
+  - 77.11980407525594
+  - 28.569680081061417
+  - 313.1379593345153
+  - -103.11152547667434
+  - 86.50089443828126
+  - 15.116327888177182
+  time:
+    second: 1
+    minute: 0
+    hour: 14
+    day: 1
+    month: 7
+    year: 2020
+- uuid: 6a56c1cc-b1c2-4ed2-aa94-3c7c228f0200
+  airport: VIDP
+  runway: '9'
+  pose:
+  - 77.11906344167875
+  - 28.569688706396224
+  - 297.9574665004627
+  - -90.99455846428967
+  - 87.56907283562202
+  - -10.991095936609444
+  time:
+    second: 1
+    minute: 0
+    hour: 10
+    day: 1
+    month: 7
+    year: 2020
+- uuid: fcb01bb7-0c5d-4808-a471-8eed44f90348
+  airport: VIDP
+  runway: '27'
+  pose:
+  - 77.06474777383859
+  - 28.57214298308709
+  - 452.27144569263515
+  - 82.53566662675289
+  - 88.68801781833047
+  - 27.033730430007296
+  time:
+    second: 1
+    minute: 0
+    hour: 13
+    day: 1
+    month: 5
+    year: 2020
+- uuid: b95728ea-eb74-4616-a8b4-165bf757d8a8
+  airport: VIDP
+  runway: '27'
+  pose:
+  - 77.06582004910469
+  - 28.570968593498858
+  - 417.28704818930544
+  - 86.16215316422613
+  - 88.4394209357591
+  - -16.380987452428037
+  time:
+    second: 1
+    minute: 0
+    hour: 14
+    day: 1
+    month: 6
+    year: 2020
+- uuid: cb5b7ffe-1c1c-4e55-a0cc-cb6973d0d6cb
+  airport: VIDP
+  runway: '27'
+  pose:
+  - 77.0696771050112
+  - 28.57128987588149
+  - 362.02579653517296
+  - 89.48434795374837
+  - 90.96749800606852
+  - -21.987949549985046
+  time:
+    second: 1
+    minute: 0
+    hour: 12
+    day: 1
+    month: 6
+    year: 2020
+- uuid: 308678e5-b1f3-43c8-bbf6-8f0d5a996abb
+  airport: VIDP
+  runway: '27'
+  pose:
+  - 77.06966778835246
+  - 28.570383617569245
+  - 413.0534725708419
+  - 97.34668514588606
+  - 80.31993588894534
+  - -13.098364983227675
+  time:
+    second: 1
+    minute: 0
+    hour: 11
+    day: 1
+    month: 5
+    year: 2020
+- uuid: 1a7445cf-82e3-4fca-9f45-7c4fcf71e2e2
+  airport: VIDP
+  runway: '27'
+  pose:
+  - 77.07604210273094
+  - 28.57057178918936
+  - 317.2745546277663
+  - 106.39923948986348
+  - 78.48651968591577
+  - 21.347345167066642
+  time:
+    second: 1
+    minute: 0
+    hour: 10
+    day: 1
+    month: 8
+    year: 2020
+runways_database: ./data/filtered_runways_database_Final_reduced_300.json
+trajectory:
+  sample_number: 5
+  dist_ap_m: 300.0
+  max_distance_m: 2500
+  min_distance_m: 280
+  distribution: uniform
+  distrib_param: 1.41
+  alpha_h_distrib: uniform
+  alpha_h_min: -3
+  alpha_h_max: 3
+  alpha_h_deg: 0
+  std_alpha_h_deg: 2
+  alpha_v_distrib: uniform
+  alpha_v_min: -5.2
+  alpha_v_max: -1.8
+  alpha_v_deg: -3
+  std_alpha_v_deg: 0.4
+  yaw_distrib: uniform
+  yaw_min: -18
+  yaw_max: 18
+  yaw_deg: 0
+  std_yaw_deg: 5.0
+  pitch_distrib: uniform
+  pitch_min: -15
+  pitch_max: 5
+  pitch_deg: -4
+  std_pitch_deg: 2
+  roll_distrib: uniform
+  roll_min: -30
+  roll_max: 30
+  roll_deg: 0
+  std_roll_deg: 5
+time:
+  second_max: 1
+  second_min: 1
+  minute_max: 0
+  minute_min: 0
+  hour_max: 16
+  hour_min: 10
+  day_max: 1
+  day_min: 1
+  month_max: 8
+  month_min: 4
+  year_max: 2020
+  year_min: 2020

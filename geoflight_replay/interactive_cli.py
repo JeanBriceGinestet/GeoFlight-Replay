@@ -1,3 +1,4 @@
+import os
 import keyboard
 
 from .constants import (
@@ -19,10 +20,8 @@ from .capture import GES_to_FSIM_runcapture
 
 
 def print_menu():
-    print("\n- Press c to export images from a Google Earth Studio scenario. "
-          f"Default scenario file {default_input_file}")
-    print("- Press r to run Google Earth Studio scenario. "
-          f"Default scenario file {default_input_file}")
+    print("\n- Press c to export images from a Google Earth Studio scenario or from a folder containing scenarios. "
+          f"Default folder / scenario file: {default_input_file}")
     print()
     print("- Press t to go to LFBO airport")
     print("- Press b to go to BIRK airport")
@@ -66,15 +65,21 @@ def interactive_loop(sm, aq, ae):
             add_objects_on_runway(sm, aq, living_list)
             print("LIVINGS ADDED!")
 
-        elif key in ["c", "r"]:
-            scenario_file = input(
-                f"Enter YAML scenario file or press ENTER for default [{default_input_file}] : "
+        elif key in ["c"]:
+            scenario_file_or_dir = input(
+                f"Provide either a YAML scenario file or a folder, or press ENTER for default [{default_input_file}] : "
             ) or default_input_file
 
-            if key == "c":
-                GES_to_FSIM_runcapture(sm, scenario_file, b_save=True)
-            else:
-                GES_to_FSIM_runcapture(sm, scenario_file, b_save=False)
+            # Check if scenario_file is a folder or a file. If it's a file, simply call the function,
+            # otherwise, call the function for each yaml file found in the folder
+            if os.path.isdir(scenario_file_or_dir):
+                for filename in os.listdir(scenario_file_or_dir):
+                    if filename.endswith(".yaml"):
+                        file_path = os.path.join(scenario_file_or_dir, filename)
+                        GES_to_FSIM_runcapture(sm, aq, ae, file_path, b_save=True, rework_altitude=False)
+
+
+            GES_to_FSIM_runcapture(sm, aq, ae, scenario_file_or_dir, b_save=True, rework_altitude=False)
             
             print_menu()
 
