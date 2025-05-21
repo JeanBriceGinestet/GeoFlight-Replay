@@ -20,14 +20,21 @@ Alternatively, you can install the requirements provided in `requirements.txt`
 
 Once installed, simply run:
 ```
-geoflight_replay
+> geoflight_replay
 ```
 
-This will open a command-line menu, but if you prefer, you can provide a yaml scenario file directly in command line, as follows: `geoflight_replay file.yaml`.
+This will open a command-line menu, but if you prefer, you can provide a yaml scenario file directly in command line, as follows: 
+```
+> geoflight_replay inputs/file.yaml`
+```
+
+In the command-line menu, you can capture either a single scenario file **or a folder** containing several scenarios.
+
+To use the package locally, you can run `python main.py` at the root instead. In this case, you can change the values in the file `geoflight_replay/constants.py`, typically the default scenario or folder to use as input in the interactive cli. 
 
 ## Features
 
-- Load, run and capture in YAML scenario in Microsoft Flight Simulator.
+- Load, and capture YAML scenarios in Microsoft Flight Simulator.
 - Interactive mode with a menu or script mode for direct execution
 - Add 3D objects supported in Microsoft Flight Simulator near the camera (eq plane) position
 - For example, position the camera at two predefined positions (LFBO and BIRK airport)
