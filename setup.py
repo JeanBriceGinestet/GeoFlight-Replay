@@ -21,6 +21,7 @@ setup(
         "keyboard>=0.13.0",
         "lunr>=0.7.0",
         "numpy>=1.26.0",
+        "pillow>=11.2.1",
         "opencv-python>=4.8.1",
         "PyGetWindow>=0.0.9",
         "PyRect>=0.2.0",
